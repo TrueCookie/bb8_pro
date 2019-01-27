@@ -28,7 +28,6 @@ bool vibro();
 void vibro_react();
 void move_react();
 void RedEye_bright();
-void LedWhite_fade();
 int run_time();
 void rand_play(int begin, int end);
 void speak();
@@ -65,6 +64,8 @@ analogWrite(LedRed, 255);
 digitalWrite(LedBlue1, HIGH);
 digitalWrite(LedBlue2, HIGH);
 
+analogWrite(LedRedEye, 60);
+
 delay(15000);
 Serial.println("All ready");
 mp3_set_volume(45);
@@ -74,7 +75,9 @@ mp3_play(23);
 void loop(){
   light_check();
   //move_react();
-  vibro_react();
+  if(!light_flag){
+    vibro_react();
+  }
   touch_react();
 }
 
@@ -91,7 +94,6 @@ bool vibro(){
 void vibro_react(){
   if(vibro()){
     Serial.println("vibro");
-    LedWhite_fade();
     RedEye_bright();
     rand_play(45,61);
     speak();
@@ -104,33 +106,27 @@ void vibro_react(){
 void move_react(){
   if(digitalRead(moveSense)){
     Serial.println("move");
-    LedWhite_fade();
+    digitalWrite(BlueLedProjector, HIGH);
+    analogWrite(LedWhite, 128);
     rand_play(0,44);
     rand_play(3,40);
+    analogWrite(LedWhite, 255);
     speak();
     projector();
     blinking(LedBlueHeadlight, 2);
     blue_blinking();
+    delay(2000);
+    digitalWrite(BlueLedProjector, HIGH);
   }
 }
 
 void RedEye_bright(){
-  int light_level = 60;
+  int level = 255;
   int delta = 15;
-  timing = millis();  //?
-  while(light_level < 255 && run_time() < 250){
-    light_level += delta;
-    analogWrite(LedRedEye, light_level);
-    timing = millis();
-  }
-}
-
-void LedWhite_fade(){ //let LedWhite fade 3 seconds
-  if(run_time() < 3000){
-    analogWrite(LedWhite, 128);
-    timing = millis();
-  }else{
-    analogWrite(LedWhite, 255);
+  while(level > 60){
+    level -= delta;
+    analogWrite(LedRedEye, level);
+    delay(60);
   }
 }
 
@@ -150,7 +146,6 @@ void speak(){
 void blinking(int someLed, int count){
   int level = 0;
   const int delta = 15;
-  //timing = millis();
   for(int i = 0; i < count; ++i){
     while(level < 255){
       level += delta;
@@ -166,12 +161,9 @@ void blinking(int someLed, int count){
 }
 
 void projector(){
-  timing = millis();
-  if(run_time() < 5000){
-    digitalWrite(BlueLedProjector, HIGH);
-  }else{
-    digitalWrite(BlueLedProjector, LOW);
-  }
+  digitalWrite(BlueLedProjector, HIGH);
+  delay(5000);
+  digitalWrite(BlueLedProjector, LOW);
 }
 
 void blue_blinking(){
