@@ -148,19 +148,19 @@ void speak(){
 }
 
 void blinking(int someLed, int count){
-  int light_level = 0;
-  int delta = 15;
-  timing = millis();  //?
+  int level = 0;
+  const int delta = 15;
+  //timing = millis();
   for(int i = 0; i < count; ++i){
-    while(light_level < 255 && run_time() < 1000){
-      light_level += delta;
-      analogWrite(someLed, light_level);
-      timing = millis();
+    while(level < 255){
+      level += delta;
+      analogWrite(someLed, level);
+      delay(10);
     }
-    while(light_level > 0 && run_time() < 1000){
-      light_level -= delta;
-      analogWrite(someLed, light_level);
-      timing = millis();
+    while(level > 0){
+      level -= delta;
+      analogWrite(someLed, level);
+      delay(10);
     }
   }
 }
@@ -176,14 +176,12 @@ void projector(){
 
 void blue_blinking(){
   for(int i = 0; i < 3; ++i){
-    timing = millis();
-    if(run_time() < 500){
       digitalWrite(LedBlue2, LOW);
       digitalWrite(LedBlue1, HIGH);
-    }else{
+    delay(100);
       digitalWrite(LedBlue1, LOW);
       digitalWrite(LedBlue2, HIGH);
-    }
+    delay(100);
   }
   digitalWrite(LedBlue1, HIGH);
   digitalWrite(LedBlue2, HIGH);
