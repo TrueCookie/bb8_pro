@@ -24,6 +24,20 @@ unsigned long int timing = 0;
 bool light_flag = digitalRead(photoSense);
 bool vibro_flag = digitalRead(knockSense);
 
+bool vibro();
+void vibro_react();
+void move_react();
+void RedEye_bright();
+void LedWhite_fade();
+int run_time();
+void rand_play(int begin, int end);
+void speak();
+void blinking(int someLed, int count);
+void projector();
+void blue_blinking();
+void touch_react();
+void light_check();
+
 void setup(){
 Serial.begin(9600);
 mp3_set_serial(Serial);
@@ -51,7 +65,10 @@ analogWrite(LedRed, 255);
 digitalWrite(LedBlue1, HIGH);
 digitalWrite(LedBlue2, HIGH);
 
-delay(6000);
+delay(15000);
+Serial.println("All ready");
+mp3_play(40);
+mp3_set_volume(45);
 }
 
 void loop(){
@@ -86,6 +103,7 @@ void vibro_react(){
 
 void move_react(){
   if(digitalRead(moveSense)){
+    Serial.println("move");
     LedWhite_fade();
     rand_play(0,44);
     rand_play(3,40);
@@ -180,13 +198,12 @@ void touch_react(){
 void light_check(){
   if(run_time() > 1000){
     if(light_flag == false && digitalRead(photoSense) == true){
-      mp3_set_volume(15);
+      mp3_set_volume(30);
       light_flag = true;
       Serial.println("light is OFF");
       mp3_play(23);
     }else if(light_flag == true && digitalRead(photoSense) == false){
       mp3_set_volume(45);
-      mp3_play(22);
       light_flag = false;
       Serial.println("light is ON");
       mp3_play(22);
