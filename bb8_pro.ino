@@ -67,15 +67,15 @@ digitalWrite(LedBlue2, HIGH);
 
 delay(15000);
 Serial.println("All ready");
-mp3_play(40);
 mp3_set_volume(45);
+mp3_play(23);
 }
 
 void loop(){
   light_check();
   //move_react();
   vibro_react();
-  //touch_react();
+  touch_react();
 }
 
 bool vibro(){
@@ -150,14 +150,14 @@ void speak(){
 void blinking(int someLed, int count){
   int light_level = 0;
   int delta = 15;
-  //timing = millis();  //?
+  timing = millis();  //?
   for(int i = 0; i < count; ++i){
-    while(light_level < 255 && run_time() < 65){
+    while(light_level < 255 && run_time() < 1000){
       light_level += delta;
       analogWrite(someLed, light_level);
       timing = millis();
     }
-    while(light_level > 0 && run_time() < 65){
+    while(light_level > 0 && run_time() < 1000){
       light_level -= delta;
       analogWrite(someLed, light_level);
       timing = millis();
@@ -192,6 +192,7 @@ void blue_blinking(){
 void touch_react(){
   if(digitalRead(touchSense)){
     rand_play(31, 44);
+    Serial.println("Oh.. Someone touch me");
   }
 }
 
